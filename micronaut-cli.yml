@@ -1,0 +1,5 @@
+profile: service
+defaultPackage: pg.example
+---
+testFramework: junit
+sourceLanguage: java
