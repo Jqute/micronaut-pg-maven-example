@@ -7,7 +7,7 @@ import io.reactiverse.reactivex.pgclient.PgPool;
 import io.reactiverse.reactivex.pgclient.PgRowSet;
 import io.reactiverse.reactivex.pgclient.Row;
 import io.reactiverse.reactivex.pgclient.Tuple;
-import pg.example.User;
+import pg.example.model.User;
 
 import javax.inject.Singleton;
 import java.util.LinkedList;
@@ -45,8 +45,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveUser(User user) {
-        client.preparedQuery("INSERT INTO users (id, username) VALUES ($1, $2)", Tuple.of(user.getId(), user.getUsername()),  ar -> {
+    public User getUser(long userId) {
+        List<User> users = new LinkedList<>();
+        PgIterator pgIterator = client.rxPreparedQuery("SELECT * FROM users WHERE id=$1", Tuple.of((int) userId))
+                .blockingGet().iterator();
+        while (pgIterator.hasNext()) {
+            Row row = pgIterator.next();
+
+            users.add(new User(row.getLong("id"), row.getString("username")));
+        }
+        return users.iterator().next();
+    }
+
+    @Override
+    public boolean saveUser(User user) {
+        String sqlQuery = "INSERT INTO users (id, username) VALUES ($1, $2) ON CONFLICT (id) DO UPDATE SET username = $3";
+        client.preparedQuery(sqlQuery, Tuple.of((int) user.getId(), user.getUsername(), user.getUsername()), ar -> {
             if (ar.succeeded()) {
                 PgRowSet rows = ar.result();
                 System.out.println(rows.rowCount());
@@ -54,15 +68,19 @@ public class UserServiceImpl implements UserService {
                 System.out.println("Failure: " + ar.cause().getMessage());
             }
         });
-    }
-
-    @Override
-    public User updateUser(User user) {
-        return null;
+        return true;
     }
 
     @Override
     public boolean deleteUser(long userId) {
-        return false;
+        client.preparedQuery("DELETE FROM users WHERE id=$1", Tuple.of((int) userId),  ar -> {
+            if (ar.succeeded()) {
+                PgRowSet rows = ar.result();
+                System.out.println(rows.rowCount());
+            } else {
+                System.out.println("Failure: " + ar.cause().getMessage());
+            }
+        });
+        return true;
     }
 }

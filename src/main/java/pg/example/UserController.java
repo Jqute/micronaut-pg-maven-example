@@ -1,16 +1,15 @@
 package pg.example;
 
 import io.micronaut.http.MediaType;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.*;
 import io.micronaut.http.HttpStatus;
-import io.micronaut.http.annotation.Produces;
+import pg.example.model.User;
 import pg.example.service.UserServiceImpl;
 
 import javax.inject.Inject;
 import java.util.List;
 
-@Controller("/user")
+@Controller("/users")
 public class UserController {
 
     private final UserServiceImpl crudService;
@@ -20,16 +19,26 @@ public class UserController {
         this.crudService = crudService;
     }
 
-    @Get("/users.json")
+    @Get("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<User> index() {
+    public List<User> users() {
         return crudService.getUsers();
     }
 
-    @Get("/save")
+    @Get("/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public HttpStatus save() {
-        crudService.saveUser(new User(1L, "Vasya"));
-        return HttpStatus.OK;
+    public User user(long userId) {
+        return crudService.getUser(userId);
+    }
+
+    @Post("/save")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public HttpStatus save(@Body User user) {
+        return crudService.saveUser(user) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+    }
+
+    @Delete("/{userId}")
+    public HttpStatus delete(long userId) {
+        return crudService.deleteUser(userId) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
     }
 }

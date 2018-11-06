@@ -1,6 +1,6 @@
 package pg.example.service;
 
-import pg.example.User;
+import pg.example.model.User;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
 public interface UserService {
 
     List<User> getUsers();
-    void saveUser(User user);
-    User updateUser(User user);
+    User getUser(long userId);
+    boolean saveUser(User user);
     boolean deleteUser(long userId);
 }

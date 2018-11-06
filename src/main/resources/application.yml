@@ -1,6 +1,8 @@
 micronaut:
     application:
         name: pg-example
+    server:
+        port: 7777
 
 postgres:
     reactive:
