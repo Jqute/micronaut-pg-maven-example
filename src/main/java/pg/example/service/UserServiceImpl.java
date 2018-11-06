@@ -1,9 +1,14 @@
-package pg.example;
+package pg.example.service;
 
 import io.reactiverse.pgclient.PgPoolOptions;
-import io.reactiverse.reactivex.pgclient.*;
+import io.reactiverse.reactivex.pgclient.PgClient;
+import io.reactiverse.reactivex.pgclient.PgIterator;
+import io.reactiverse.reactivex.pgclient.PgPool;
+import io.reactiverse.reactivex.pgclient.PgRowSet;
+import io.reactiverse.reactivex.pgclient.Row;
+import io.reactiverse.reactivex.pgclient.Tuple;
+import pg.example.User;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,11 +17,11 @@ import java.util.List;
  * Created by olesya.daderko on 11/5/18.
  */
 @Singleton
-public class CRUDServiceImpl implements CRUDService {
+public class UserServiceImpl implements UserService {
 
     private PgPool client;
 
-    public CRUDServiceImpl() {
+    public UserServiceImpl() {
         PgPoolOptions options = new PgPoolOptions()
                 .setPort(5432)
                 .setHost("localhost")

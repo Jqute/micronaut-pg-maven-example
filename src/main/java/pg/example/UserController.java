@@ -5,21 +5,22 @@ import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Produces;
+import pg.example.service.UserServiceImpl;
 
 import javax.inject.Inject;
 import java.util.List;
 
-@Controller("/CRUD")
-public class CRUDController {
+@Controller("/user")
+public class UserController {
 
-    private final CRUDServiceImpl crudService;
+    private final UserServiceImpl crudService;
 
     @Inject
-    public CRUDController(CRUDServiceImpl crudService) {
+    public UserController(UserServiceImpl crudService) {
         this.crudService = crudService;
     }
 
-    @Get("/user.json")
+    @Get("/users.json")
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> index() {
         return crudService.getUsers();
