@@ -31,7 +31,7 @@ public class UserController {
         return crudService.getUser(userId);
     }
 
-    @Post("/save")
+    @Post("/")
     @Consumes(MediaType.APPLICATION_JSON)
     public HttpStatus save(@Body User user) {
         return crudService.saveUser(user) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
