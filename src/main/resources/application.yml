@@ -1,3 +1,13 @@
 micronaut:
     application:
         name: pg-example
+
+postgres:
+    reactive:
+        client:
+            port: 5432
+            host: localhost
+            database: postgres
+            user: postgres
+            password: example
+            maxSize: 5
